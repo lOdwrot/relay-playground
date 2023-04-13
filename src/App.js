@@ -1,24 +1,25 @@
-import logo from './logo.svg';
-import './App.css';
+import { Suspense } from "react";
+import {
+  loadQuery, RelayEnvironmentProvider
+} from "react-relay/hooks";
+import "./App.css";
+import { RelayEnv } from "./graphql/utils";
+import { RepoInfo } from "./RepoInfo/RepoInfo";
+import { RepositoryNameQuery } from "./RepoInfo/RepoInfo.query";
+
+
+
+const preloadedQuery = loadQuery(RelayEnv, RepositoryNameQuery, {
+  /* query variables */
+});
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <RelayEnvironmentProvider environment={RelayEnv}>
+      <Suspense fallback={'Loading...'}>
+        <RepoInfo preloadedQuery={preloadedQuery}/>
+      </Suspense>
+    </RelayEnvironmentProvider>
   );
 }
 
